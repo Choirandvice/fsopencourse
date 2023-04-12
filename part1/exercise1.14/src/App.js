@@ -1,4 +1,7 @@
 import { useState } from 'react'
+import './App.css';
+
+const ROUNDING_MULTIPLIER = 10
 
 const Button = (props) => (
   <button onClick={props.handleClick}>
@@ -8,9 +11,10 @@ const Button = (props) => (
 
 const StatisticLine = ({text,value}) => {
   return (
-    <p>
-      {text} {value}
-    </p>
+    <tr>
+      <th>{text}</th>
+      <th>{value}</th>
+    </tr>
   )
 }
 
@@ -27,19 +31,22 @@ const Statistics = ({good,bad,neutral}) => {
   else{
 
     const total = good + neutral + bad
-    const average = (good * 1 + bad * -1)/(total)
-    const positive = 100*(good)/(total) + "%"
-
+    const average = Math.round((good * 1 + bad * -1)/(total)*ROUNDING_MULTIPLIER)/ROUNDING_MULTIPLIER
+    const positive = Math.round(100*(good)/(total)*ROUNDING_MULTIPLIER)/ROUNDING_MULTIPLIER + "%"
 
     return (
       <div>
         <h1>statistics</h1>
-        <StatisticLine text="good" value={good}/>
-        <StatisticLine text="neutral" value={neutral}/>
-        <StatisticLine text="bad" value={bad}/>
-        <StatisticLine text="all" value={total}/>
-        <StatisticLine text="average" value={average}/>
-        <StatisticLine text="positive" value={positive}/>
+        <table>
+          <tbody>
+            <StatisticLine text="good" value={good}/>
+            <StatisticLine text="neutral" value={neutral}/>
+            <StatisticLine text="bad" value={bad}/>
+            <StatisticLine text="all" value={total}/>
+            <StatisticLine text="average" value={average}/>
+            <StatisticLine text="positive" value={positive}/>
+          </tbody>
+        </table>
       </div>
     )
   }
