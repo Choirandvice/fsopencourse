@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import personService from './services/persons'
 
 const NumbersList = ({persons}) => {
   console.log("Numberslist input", persons)
@@ -111,10 +112,13 @@ const App = () => {
 
       console.log("adding:",newPerson)
 
-      setPersons(persons.concat(newPerson))
-  
-      setNewName('')  
-      setNewNumber('')
+      personService.createPerson(newPerson)
+        .then(returnedPerson=>{
+          setPersons(persons.concat(returnedPerson))
+          setNewName('')  
+          setNewNumber('')    
+        })
+      
     }
 
   }
