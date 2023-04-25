@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import personService from './services/persons'
 
-const NumbersList = ({persons}) => {
+const NumbersList = ({persons,personDelete}) => {
   console.log("Numberslist input", persons)
   return(
     <div>
@@ -10,7 +10,7 @@ const NumbersList = ({persons}) => {
         <ul>
           {
             persons.map((person)=>
-              <ListEntry key={person.name} name={person.name} number={person.number}></ListEntry>
+              <ListEntry key={person.id} name={person.name} number={person.number} deleteEntry={()=>personDelete(person.id)}></ListEntry>
             )
           }
         </ul>
@@ -18,9 +18,11 @@ const NumbersList = ({persons}) => {
   )
 }
 
-const ListEntry = ({name,number}) => {
+const ListEntry = ({name,number,deleteEntry}) => {
   return(
-    <li>{name} {number}</li>
+    <li>
+      {name} {number} <button onClick={deleteEntry}>delete</button>
+    </li>
   )
 }
 
@@ -101,8 +103,29 @@ const App = () => {
 
 
     // find name in current list
-    if(persons.some(person=>person.name===newName)){
-      alert(`${newName} is already added to phonebook`)
+    if(persons.some(person=>person.name.toLowerCase()===newName.toLowerCase())){
+      if(window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)){
+        const replacedId = persons.find(person => person.name.toLowerCase()===newName.toLowerCase()).id
+
+        console.log(`replacing ${newName}`)
+
+        const newPerson = {
+          name: newName,
+          number: newNumber
+        }  
+
+        personService.replacePerson(replacedId,newPerson)
+          .then(returnedPerson=>{
+            setPersons(persons.map(person=>person.id !== replacedId ? person : returnedPerson))
+            setNewName('')  
+            setNewNumber('')   
+          }
+        )
+ 
+      }
+      else{
+        console.log(`ignoring request`)
+      }
     }
     else{
       const newPerson = {
@@ -123,6 +146,16 @@ const App = () => {
 
   }
 
+  const handlePersonDelete = (id) => {
+    console.log(`deleting ${id}`)
+
+    personService.deletePerson(id)
+      .then(response =>{
+        setPersons(persons.filter(person=>person.id!==id))
+
+    })
+
+  }
 
 
   return (
@@ -135,7 +168,7 @@ const App = () => {
         handlePersonChange={handlePersonChange}
         newNumber={newNumber}
         handleNumberChange={handleNumberChange}></InputForm>
-      <NumbersList persons={personsToShow}></NumbersList>
+      <NumbersList persons={personsToShow} personDelete={handlePersonDelete}></NumbersList>
     </div>
   )
 }

@@ -20,10 +20,12 @@ const createPerson = newObject => {
 
 const deletePerson = (id) => {
   console.log(`deleting ${id} from server`)
+  const request = axios.delete(`${baseUrl}/${id}`)
+  return request.then(response => response.data)
 }
 
 const replacePerson = (id, newObject) => {
-  console.error(`need to change the id so it's the same somehow as the replaced one`)
+  console.error(`replacing ${id} on server`)
   const request = axios.put(`${baseUrl}/${id}`, newObject)
   return request.then(response => response.data)
 }
