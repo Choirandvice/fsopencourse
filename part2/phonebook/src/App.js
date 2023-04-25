@@ -2,68 +2,72 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import personService from './services/persons'
 
-const NumbersList = ({persons,personDelete}) => {
-  console.log("Numberslist input", persons)
-  return(
-    <div>
-      <h2>Numbers</h2>
-        <ul>
-          {
-            persons.map((person)=>
-              <ListEntry key={person.id} name={person.name} number={person.number} deleteEntry={()=>personDelete(person.id)}></ListEntry>
-            )
-          }
-        </ul>
-    </div>
-  )
-}
+import InputForm from "./components/InputForm"
+import FilterField from './components/FilterField'
+import NumbersList from './components/NumbersList'
 
-const ListEntry = ({name,number,deleteEntry}) => {
-  return(
-    <li>
-      {name} {number} <button onClick={deleteEntry}>delete</button>
-    </li>
-  )
-}
+// const NumbersList = ({persons,personDelete}) => {
+//   console.log("Numberslist input", persons)
+//   return(
+//     <div>
+//       <h2>Numbers</h2>
+//         <ul>
+//           {
+//             persons.map((person)=>
+//               <ListEntry key={person.id} name={person.name} number={person.number} deleteEntry={()=>personDelete(person.id)}></ListEntry>
+//             )
+//           }
+//         </ul>
+//     </div>
+//   )
+// }
 
-const FilterForm = ({currentFilter,setFilter}) => {
-  const handleFilterChange = (event) =>{
-    console.log(event.target.value)
-    setFilter(event.target.value)
-  }
+// const ListEntry = ({name,number,deleteEntry}) => {
+//   return(
+//     <li>
+//       {name} {number} <button onClick={deleteEntry}>delete</button>
+//     </li>
+//   )
+// }
 
-  return(
-    <div>
-      filter shown with <input value={currentFilter} onChange={handleFilterChange}/>
-    </div>
-  )
-}
+// const FilterForm = ({currentFilter,setFilter}) => {
+//   const handleFilterChange = (event) =>{
+//     console.log(event.target.value)
+//     setFilter(event.target.value)
+//   }
 
-const InputForm = ({handlePersonAdd,newName,handlePersonChange,newNumber,handleNumberChange}) => {
+//   return(
+//     <div>
+//       filter shown with <input value={currentFilter} onChange={handleFilterChange}/>
+//     </div>
+//   )
+// }
 
-  return(
-    <div>
-      <h2>add a new</h2>
-      <form onSubmit={handlePersonAdd}>
-        <div>
-          name: <input
-            value={newName}
-            onChange={handlePersonChange}
-          />
-        </div>
-        <div>
-          number: <input 
-            value={newNumber}
-            onChange={handleNumberChange}
-          />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-    </div>
-  )
-}
+// const InputForm = ({handlePersonAdd,newName,handlePersonChange,newNumber,handleNumberChange}) => {
+
+//   return(
+//     <div>
+//       <h2>add a new</h2>
+//       <form onSubmit={handlePersonAdd}>
+//         <div>
+//           name: <input
+//             value={newName}
+//             onChange={handlePersonChange}
+//           />
+//         </div>
+//         <div>
+//           number: <input 
+//             value={newNumber}
+//             onChange={handleNumberChange}
+//           />
+//         </div>
+//         <div>
+//           <button type="submit">add</button>
+//         </div>
+//       </form>
+//     </div>
+//   )
+// }
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -161,7 +165,7 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1>
-      <FilterForm currentFilter={currentFilter} setFilter={setFilter}></FilterForm>
+      <FilterField currentFilter={currentFilter} setFilter={setFilter}></FilterField>
       <InputForm 
         handlePersonAdd={handlePersonAdd}
         newName={newName}
