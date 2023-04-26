@@ -5,75 +5,16 @@ import personService from './services/persons'
 import InputForm from "./components/InputForm"
 import FilterField from './components/FilterField'
 import NumbersList from './components/NumbersList'
-
-// const NumbersList = ({persons,personDelete}) => {
-//   console.log("Numberslist input", persons)
-//   return(
-//     <div>
-//       <h2>Numbers</h2>
-//         <ul>
-//           {
-//             persons.map((person)=>
-//               <ListEntry key={person.id} name={person.name} number={person.number} deleteEntry={()=>personDelete(person.id)}></ListEntry>
-//             )
-//           }
-//         </ul>
-//     </div>
-//   )
-// }
-
-// const ListEntry = ({name,number,deleteEntry}) => {
-//   return(
-//     <li>
-//       {name} {number} <button onClick={deleteEntry}>delete</button>
-//     </li>
-//   )
-// }
-
-// const FilterForm = ({currentFilter,setFilter}) => {
-//   const handleFilterChange = (event) =>{
-//     console.log(event.target.value)
-//     setFilter(event.target.value)
-//   }
-
-//   return(
-//     <div>
-//       filter shown with <input value={currentFilter} onChange={handleFilterChange}/>
-//     </div>
-//   )
-// }
-
-// const InputForm = ({handlePersonAdd,newName,handlePersonChange,newNumber,handleNumberChange}) => {
-
-//   return(
-//     <div>
-//       <h2>add a new</h2>
-//       <form onSubmit={handlePersonAdd}>
-//         <div>
-//           name: <input
-//             value={newName}
-//             onChange={handlePersonChange}
-//           />
-//         </div>
-//         <div>
-//           number: <input 
-//             value={newNumber}
-//             onChange={handleNumberChange}
-//           />
-//         </div>
-//         <div>
-//           <button type="submit">add</button>
-//         </div>
-//       </form>
-//     </div>
-//   )
-// }
+import NotificationMessage from './components/NotificationMessage'
+import ErrorMessage from './components/ErrorMessage'
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [currentFilter, setFilter] = useState('')
+  const [statusMessage, setStatusMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
 
   const personsToShow = currentFilter===''
     ? persons
@@ -121,10 +62,20 @@ const App = () => {
         personService.replacePerson(replacedId,newPerson)
           .then(returnedPerson=>{
             setPersons(persons.map(person=>person.id !== replacedId ? person : returnedPerson))
+            setStatusMessage(`Replaced number for ${newName}`)
+            setTimeout(()=>setStatusMessage(null),5000)
             setNewName('')  
-            setNewNumber('')   
-          }
-        )
+            setNewNumber('')
+          })
+          .catch(error => {
+            setErrorMessage(
+              `Person '${newPerson.name}' has already been removed from server`
+            )
+            setTimeout(() => {
+              setErrorMessage(null)
+            },5000)
+            setPersons(persons.filter(person => person.id !== replacedId))
+          })
  
       }
       else{
@@ -142,6 +93,8 @@ const App = () => {
       personService.createPerson(newPerson)
         .then(returnedPerson=>{
           setPersons(persons.concat(returnedPerson))
+          setStatusMessage(`Added ${newName}`)
+          setTimeout(()=>setStatusMessage(null),5000)
           setNewName('')  
           setNewNumber('')    
         })
@@ -155,7 +108,13 @@ const App = () => {
 
     personService.deletePerson(id)
       .then(response =>{
+
+        // get the person's name for status message
+        const personName = persons.find(person => person.id===id).name
+
         setPersons(persons.filter(person=>person.id!==id))
+        setStatusMessage(`Deleted ${personName}`)
+        setTimeout(()=>setStatusMessage(null),5000)
 
     })
 
@@ -165,6 +124,8 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1>
+      <ErrorMessage message={errorMessage}></ErrorMessage>
+      <NotificationMessage message={statusMessage}></NotificationMessage>
       <FilterField currentFilter={currentFilter} setFilter={setFilter}></FilterField>
       <InputForm 
         handlePersonAdd={handlePersonAdd}

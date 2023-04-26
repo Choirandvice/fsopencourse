@@ -25,7 +25,7 @@ const deletePerson = (id) => {
 }
 
 const replacePerson = (id, newObject) => {
-  console.error(`replacing ${id} on server`)
+  console.log(`replacing ${id} on server`)
   const request = axios.put(`${baseUrl}/${id}`, newObject)
   return request.then(response => response.data)
 }
