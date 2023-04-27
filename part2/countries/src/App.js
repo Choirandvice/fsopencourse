@@ -1,17 +1,17 @@
 import { useState,useEffect } from "react";
 import axios from 'axios'
 
-const CountryEntry = ({country}) => {
+const CountryEntry = ({country,showCountry}) => {
   return(
-    <li key={country.name.common}>{country.name.common}</li>
+    <li key={country.name.common}>{country.name.common}<button onClick={()=>showCountry(country)}>show</button></li>
   )
 }
 
-const CountryList = ({countries}) => {
+const CountryList = ({countries,showCountry}) => {
 
   return(
     <ul>
-      {countries.map(country => <CountryEntry country={country}></CountryEntry>)}
+      {countries.map(country => <CountryEntry country={country} showCountry={showCountry}></CountryEntry>)}
     </ul>
   )
 }
@@ -53,7 +53,7 @@ const CountryDisplaySingle = ({country}) => {
   )
 }
 
-const CountryDisplay = ({countries}) => {
+const CountryDisplay = ({countries,showCountry}) => {
 
   if(countries.length>10){
     return (
@@ -68,7 +68,7 @@ const CountryDisplay = ({countries}) => {
     )
   }
   return(
-    <CountryList countries={countries}></CountryList>
+    <CountryList countries={countries} showCountry={showCountry}></CountryList>
   )
 
 }
@@ -94,19 +94,30 @@ const App = () => {
     setFilter(event.target.value)
   }
 
+  // set filter to unique code to highlight one single country
+  const showCountry = (country) => {
+    setFilter(`cca3:${country.cca3}`)
+  }
+
+  var countriesToShow
 
   if(countries!==null){
 
-    const countriesToShow = 
-      currentFilter===''
-      ? countries
-      : countries.filter(country => country.name.common.toLowerCase().includes(currentFilter.toLowerCase()))
-  
+    if(currentFilter.substring(0,5).toLowerCase()==="cca3:"){
+      countriesToShow = currentFilter.substring(5) === ''
+        ? countries
+        : countries.filter(country => country.cca3.toLowerCase().includes(currentFilter.substring(5).toLowerCase()))
+    }
+    else{
+      countriesToShow = currentFilter===''
+        ? countries
+        : countries.filter(country => country.name.common.toLowerCase().includes(currentFilter.toLowerCase()))
+    }
 
     return (
       <div>
         <p>find countries <input value={currentFilter} onChange={handleFilterChange}></input></p>
-          <CountryDisplay countries={countriesToShow}></CountryDisplay>
+          <CountryDisplay countries={countriesToShow} showCountry={showCountry}></CountryDisplay>
       </div>
     );
   }
