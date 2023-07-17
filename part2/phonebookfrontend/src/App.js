@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+// import axios from 'axios'
 import personService from './services/persons'
 
 import InputForm from "./components/InputForm"
@@ -22,12 +22,18 @@ const App = () => {
 
   useEffect(() => {
     console.log('effect')
-    axios
-      .get('http://localhost:3001/persons')
+    personService
+      .getAll()
       .then(response => {
         console.log('promise fulfilled')
-        setPersons(response.data)
+        setPersons(response)
       })
+    // axios
+    //   .get('http://localhost:3001/persons')
+    //   .then(response => {
+    //     console.log('promise fulfilled')
+    //     setPersons(response.data)
+    //   })
   }, [])
   console.log('render', persons.length, 'persons')
   
