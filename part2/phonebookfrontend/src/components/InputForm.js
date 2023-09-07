@@ -2,7 +2,7 @@ const InputForm = ({handlePersonAdd,newName,handlePersonChange,newNumber,handleN
 
   return(
     <div>
-      <h2>add a new</h2>
+      <h2>add a new entry</h2>
       <form onSubmit={handlePersonAdd}>
         <div>
           name: <input

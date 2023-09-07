@@ -74,9 +74,8 @@ const App = () => {
             setNewNumber('')
           })
           .catch(error => {
-            setErrorMessage(
-              `Person '${newPerson.name}' has already been removed from server`
-            )
+            console.log(error.response.data.error)
+            setErrorMessage(error.response.data.error)
             setTimeout(() => {
               setErrorMessage(null)
             },5000)
@@ -103,6 +102,13 @@ const App = () => {
           setTimeout(()=>setStatusMessage(null),5000)
           setNewName('')  
           setNewNumber('')    
+        })
+        .catch(error => {
+          console.log(error.response.data.error)
+          setErrorMessage(error.response.data.error)
+          setTimeout(() => {
+            setErrorMessage(null)
+          },5000)    
         })
       
     }
