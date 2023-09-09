@@ -79,7 +79,6 @@ const App = () => {
             setTimeout(() => {
               setErrorMessage(null)
             },5000)
-            setPersons(persons.filter(person => person.id !== replacedId))
           })
  
       }
