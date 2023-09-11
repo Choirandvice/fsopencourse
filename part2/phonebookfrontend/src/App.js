@@ -79,6 +79,9 @@ const App = () => {
             setTimeout(() => {
               setErrorMessage(null)
             },5000)
+            if(/removed/.test(error.response.data.error)){
+              setPersons(persons.filter(person=>person.id !== replacedId))
+            }
           })
  
       }
